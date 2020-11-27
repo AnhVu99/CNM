@@ -44,7 +44,7 @@ public class FragProfile extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-
+    static final String host = "192.168.100.171";
     TextView tvID;
     EditText etName;
     RadioButton rbNam,rbNu;
@@ -103,7 +103,7 @@ public class FragProfile extends Fragment {
                 .add("user", mParam1)
                 .build();
         request = new Request.Builder()
-                .url("http://192.168.68.172:3000/users/getuser")
+                .url("http://"+host+":3000/users/getuser")
                 .patch(requestBody)
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -160,7 +160,7 @@ public class FragProfile extends Fragment {
                         .add("bday",String.valueOf(getDateFromDatePicker(dpNS)))
                         .build();
                 request = new Request.Builder()
-                        .url("http://192.168.68.172:3000/users/update")
+                        .url("http://"+host+":3000/users/update")
                         .put(requestBody)
                         .build();
                 client.newCall(request).enqueue(new Callback() {

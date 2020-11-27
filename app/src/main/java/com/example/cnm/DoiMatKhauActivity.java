@@ -32,6 +32,7 @@ public class DoiMatKhauActivity extends AppCompatActivity {
     RequestBody requestBody;
     Request request;
     MyUser user;
+    static final String host = "192.168.100.171";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +50,7 @@ public class DoiMatKhauActivity extends AppCompatActivity {
                 .add("user", phonenumber)
                 .build();
         request = new Request.Builder()
-                .url("http://10.156.167.139:3000/users/getuser")
+                .url("http://"+host+":3000/users/getuser")
                 .patch(requestBody)
                 .build();
         client.newCall(request).enqueue(new Callback() {

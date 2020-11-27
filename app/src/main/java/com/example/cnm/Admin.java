@@ -30,6 +30,7 @@ public class Admin extends AppCompatActivity {
     RecyclerView rec;
     //List<MyUser> list;
     AdapterRecAD adapterRecAD;
+    static final String host = "192.168.100.171";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +45,7 @@ public class Admin extends AppCompatActivity {
         Type usersType = Types.newParameterizedType(List.class, MyUser.class);
         final JsonAdapter<List<MyUser>> jsonAdapter = moshi.adapter(usersType);
         Request request = new Request.Builder()
-                .url("http://10.156.167.139:3000/users/getall")// link gủi request
+                .url("http://"+host+":3000/users/getall")// link gủi request
                 .build()
                 ;
         client.newCall(request).enqueue(new Callback() {

@@ -28,9 +28,9 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
-Button btnDK,btnDN;
-EditText etID,etPass;
-
+    Button btnDK,btnDN;
+    EditText etID,etPass;
+    static final String host = "192.168.100.171";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +75,7 @@ EditText etID,etPass;
                             .add("user", number)
                             .build();
                     Request request = new Request.Builder()
-                            .url("http://192.168.68.172:3000/users/getuser")
+                            .url("http://"+host+":3000/users/getuser")
                             .patch(requestBody)
                             .build();
                     client.newCall(request).enqueue(new Callback() {

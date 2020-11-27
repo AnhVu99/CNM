@@ -38,6 +38,7 @@ public class DangKy extends AppCompatActivity {
     Button btnDK;
     ImageView img;
     String phonenumber;
+    static final String host = "192.168.100.171";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +106,7 @@ public class DangKy extends AppCompatActivity {
                         .add("trangthai",String.valueOf(Boolean.FALSE))
                         .build();
                 Request request = new Request.Builder()
-                        .url("http://10.156.167.139:3000/users/create")
+                        .url("http://"+host+":3000/users/create")
                         .post(requestBody)
                         .build();
                 client.newCall(request).enqueue(new Callback() {

@@ -17,9 +17,9 @@ import java.util.ArrayList;
 public class AdapterRecDB extends RecyclerView.Adapter<WordViewHolder>{
     private LayoutInflater layoutInflater;
     private Context context;
-    private ArrayList<itemDB> arrayList;
+    private ArrayList<MyUser> arrayList;
 
-    public AdapterRecDB(Context context, ArrayList<itemDB> arrayList) {
+    public AdapterRecDB(Context context, ArrayList<MyUser> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
         layoutInflater = LayoutInflater.from(context);
@@ -34,10 +34,10 @@ public class AdapterRecDB extends RecyclerView.Adapter<WordViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull WordViewHolder holder, int position) {
-        itemDB db = arrayList.get(position);
-        holder.img.setImageResource(db.getAnh());
-        holder.tvSDT.setText(db.getSDT());
-        holder.tvName.setText(db.getTen());
+        MyUser db = arrayList.get(position);
+        holder.img.setImageResource(db.getImg());
+        holder.tvSDT.setText(db.getId());
+        holder.tvName.setText(db.getName());
 
     }
 

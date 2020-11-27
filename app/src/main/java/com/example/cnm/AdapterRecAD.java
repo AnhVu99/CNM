@@ -37,6 +37,7 @@ public class AdapterRecAD extends RecyclerView.Adapter<ADViewHolder> {
     private LayoutInflater layoutInflater;
     private Context context;
     private List<MyUser> arrayList;
+    static final String host = "192.168.100.171";
     public AdapterRecAD(Context context, List<MyUser> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
@@ -80,7 +81,7 @@ public class AdapterRecAD extends RecyclerView.Adapter<ADViewHolder> {
 
                 }
                 Request request = new Request.Builder()
-                        .url("http://10.156.167.139:3000/users/updatett")
+                        .url("http://"+host+":3000/users/updatett")
                         .put(requestBody)
                         .build();
                 client.newCall(request).enqueue(new Callback() {

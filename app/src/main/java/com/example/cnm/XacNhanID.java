@@ -52,7 +52,7 @@ public class XacNhanID extends AppCompatActivity {
     PhoneAuthOptions options;
     String phoneNumber;
     private String verificationIds;
-
+    static final String host = "192.168.100.171";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +85,7 @@ public class XacNhanID extends AppCompatActivity {
                         .add("user", number)
                         .build();
                 Request request = new Request.Builder()
-                        .url("http://10.156.167.139:3000/users/getuser")
+                        .url("http://"+host+":3000/users/getuser")
                         .patch(requestBody)
                         .build();
                 client.newCall(request).enqueue(new Callback() {
