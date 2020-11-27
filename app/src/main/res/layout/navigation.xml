@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="36dp"
+    android:layout_width="match_parent"
+    >
+    <item
+        android:id="@+id/navigation_profile"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="@string/title_profile" />
+    <item
+        android:id="@+id/navigation_DanhBa"
+        android:icon="@drawable/ic_baseline_contacts_24"
+        android:title="Danh bạ" />
+
+    <item
+        android:id="@+id/navigation_mess"
+        android:icon="@drawable/ic_baseline_message_24"
+        android:title="Tin nhắn" />
+
+    <item
+        android:id="@+id/navigation_group"
+        android:icon="@drawable/ic_baseline_groups_24"
+        android:title="Nhóm" />
+
+</menu>
