@@ -80,7 +80,7 @@ public class AdapterRecAD extends RecyclerView.Adapter<ADViewHolder> {
 
                 }
                 Request request = new Request.Builder()
-                        .url("http://192.168.1.12:3000/users/updatett")
+                        .url("http://10.156.167.139:3000/users/updatett")
                         .put(requestBody)
                         .build();
                 client.newCall(request).enqueue(new Callback() {

@@ -10,13 +10,32 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +58,9 @@ public class Danhba extends Fragment {
     RecyclerView recyclerView;
     AdapterRecDB adapterRecDB;
     AdapterRecYC adapterRecYC;
+    RequestBody requestBody;
+    Request request;
+    MyFriend friend;
     public Danhba() {
         // Required empty public constructor
     }
@@ -60,6 +82,13 @@ public class Danhba extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    public static Danhba newInstance(String param1) {
+        Danhba fragment = new Danhba();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        fragment.setArguments(args);
+        return fragment;
+    }
     public static Danhba newInstance() {
         Danhba fragment = new Danhba();
         return fragment;
@@ -71,12 +100,15 @@ public class Danhba extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public  View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        final OkHttpClient client = new OkHttpClient();
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_danhba, container, false);
         lst = new ArrayList<>();
@@ -98,10 +130,66 @@ public class Danhba extends Fragment {
             else
                 dsdb.add(lst.get(i));
         }
+
+        requestBody = new FormBody.Builder()
+                .add("user", mParam1)
+                .build();
+        request = new Request.Builder()
+                .url("http://192.168.68.172:3000/friends/getown")
+                .patch(requestBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("Error",e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException {
+                if(response.isSuccessful()){
+                    Moshi moshi = new Moshi.Builder().build();
+                    Type usersType = Types.newParameterizedType(List.class, MyFriend.class);
+                    final String json = response.body().string();
+                    final JsonAdapter<List<MyFriend>> jsonAdapter = moshi.adapter(usersType);
+                    final List<MyFriend> list;
+                    list = jsonAdapter.fromJson(json);
+                    friend = list.get(0);
+                }
+            }
+        });
+
+        final ArrayList<MyUser> dsYC = new ArrayList<MyUser>();
+
+        for(String id :friend.getReceive()){
+            requestBody = new FormBody.Builder()
+                    .add("user", id)
+                    .build();
+            request = new Request.Builder()
+                    .url("http://192.168.68.172:3000/users/getuser")
+                    .patch(requestBody)
+                    .build();
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    Moshi moshi = new Moshi.Builder().build();
+                    Type usersType = Types.newParameterizedType(List.class, MyUser.class);
+                    String json = response.body().string();
+                    String tmp ="["+json+"]";
+                    final JsonAdapter<List<MyUser>> jsonAdapter = moshi.adapter(usersType);
+                    final List<MyUser> list = jsonAdapter.fromJson(tmp);
+                    dsYC.add(list.get(0));
+                }
+            });
+        }
         etSearch = view.findViewById(R.id.etSearch_DB);
         btnSearch = view.findViewById(R.id.buttonSearch_DB);
         adapterRecDB = new AdapterRecDB(getContext(),dsdb);
-        adapterRecYC = new AdapterRecYC(getContext(),dsyc);
+        adapterRecYC = new AdapterRecYC(getContext(),dsYC);
         btnDB = view.findViewById(R.id.buttonDanhBa_DB);
         btnYC = view.findViewById(R.id.buttonYC_DB);
         recyclerView = view.findViewById(R.id.recyle_DB);
@@ -125,34 +213,92 @@ public class Danhba extends Fragment {
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAlertDialog(getActivity());
+                String number = etSearch.getText().toString().trim();
+
+                if (number.isEmpty() || number.length() < 10) {
+                    etSearch.setError("Valid number is required");
+                    etSearch.requestFocus();
+                    return;
+                }
+                if(number.equals(mParam1)){
+                    Toast.makeText(getContext(),"Đây là số điện thoại của bạn!!!",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                requestBody = new FormBody.Builder()
+                        .add("user", number)
+                        .build();
+                request = new Request.Builder()
+                        .url("http://192.168.68.172:3000/users/getuser")
+                        .patch(requestBody)
+                        .build();
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Log.e("Error",e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        Moshi moshi = new Moshi.Builder().build();
+                        Type usersType = Types.newParameterizedType(List.class, MyUser.class);
+                        final JsonAdapter<List<MyUser>> jsonAdapter = moshi.adapter(usersType);
+                        String json = response.body().string();
+                        String s = "["+json+"]";
+                        final List<MyUser> list = jsonAdapter.fromJson(s);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(list.size()==0){
+                                    showAlertDialog(getActivity());
+                                }
+                                else {
+                                    if(friend.getFriend().size()==0 && friend.getReceive().size()==0 && friend.getSend().size()==0){
+                                        MyUser user = list.get(0);
+                                        showAlertDialog(getActivity(),user,0,mParam1);
+                                    }
+                                    if(SearchInList(etSearch.getText().toString().trim(),friend.getFriend())){
+                                        // trong danh sach ban be
+                                        MyUser user = list.get(0);
+                                        showAlertDialog(getActivity(),user,1,mParam1);
+                                    }
+                                    if(SearchInList(etSearch.getText().toString().trim(),friend.getSend())){
+                                        // trong danh sach gui ket ban
+                                        MyUser user = list.get(0);
+                                        showAlertDialog(getActivity(),user,2,mParam1);
+                                    }
+                                    if(SearchInList(etSearch.getText().toString().trim(),friend.getReceive())){
+                                        // trong danh sach nhan
+                                        MyUser user = list.get(0);
+                                        showAlertDialog(getActivity(),user,3,mParam1);
+                                    }
+
+                                }
+                            }
+                        });
+                    }
+                });
+                //
             }
         });
         return view;
     }
     public static void showAlertDialog(final Activity context)  {
-        final Drawable positiveIcon = context.getResources().getDrawable(R.drawable.ic_baseline_close_24);
+        //final Drawable positiveIcon = context.getResources().getDrawable(R.drawable.ic_baseline_close_24);
         Drawable p = context.getDrawable(R.drawable.ic_baseline_close_24);
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         // Custom Title Area.
-        LayoutInflater inflater = context.getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_search_proflie, null);
-        builder.setCustomTitle(view);
 
-        // Message.
-        //builder.setMessage("This is AlertDialog with Custom Title Area");
+        // Set Title and Message:
+        builder.setTitle("Thông báo").setMessage("Không tìm thấy");
+
         //
         builder.setCancelable(true);
-        builder.setIcon(R.drawable.ic_baseline_person_add_24);
-        builder.setNegativeButton("", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                builder.setNegativeButtonIcon(context.getDrawable(R.drawable.ic_baseline_mark_email_read_24));
-                
-            }
-        });
-        builder.setNegativeButtonIcon(context.getDrawable(R.drawable.ic_baseline_person_add_24));
+        builder.setIcon(R.drawable.ic_baseline_report_problem_24);
+
+        // Message.
+        //builder.setMessage("Không tìm thấy");
+        //
         // Create "OK" button with OnClickListener.
         builder.setPositiveButton("", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -163,6 +309,165 @@ public class Danhba extends Fragment {
         // Create AlertDialog:
         AlertDialog alert = builder.create();
         alert.show();
+    }
+    public static void showAlertDialog(final Activity context, final MyUser u, int stt, final String s)  {//s la id gui. id cua home
+        //final Drawable positiveIcon = context.getResources().getDrawable(R.drawable.ic_baseline_close_24);
+        Drawable p = context.getDrawable(R.drawable.ic_baseline_close_24);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        // Custom Title Area.
+        LayoutInflater inflater = context.getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_search_proflie, null);
+        TextView tvName = view.findViewById(R.id.textViewName_dialogSearch);
+        final TextView tvSDT = view.findViewById(R.id.textViewSDT_dialogSearch);
+        TextView gt = view.findViewById(R.id.textViewGioTinh_dialogSearch);
+        TextView ns = view.findViewById(R.id.textViewNS_dialogSearch);
+        ImageView img = view.findViewById(R.id.imageView_dialogSearch);
+
+        if(u.isGender())
+            gt.setText("Giới tính: Nam");
+        else
+            gt.setText("Giới tính: Nữ");
+        ns.setText(String.copyValueOf(u.getDoB().toCharArray(),0,10));
+        tvName.setText(u.getName());
+        tvSDT.setText(u.getId());
+        builder.setCustomTitle(view);
+
+        // Message.
+        //builder.setMessage("This is AlertDialog with Custom Title Area");
+        //
+        builder.setCancelable(true);
+       if(stt==0){
+           //builder.setIcon(R.drawable.ic_baseline_person_add_24);
+           builder.setNegativeButton("", new DialogInterface.OnClickListener() {
+               @Override
+               public void onClick(DialogInterface dialogInterface, int i) {
+
+
+               }
+           });
+           builder.setNegativeButtonIcon(p);
+           // Create "OK" button with OnClickListener.
+           builder.setPositiveButton("", new DialogInterface.OnClickListener() {
+               public void onClick(DialogInterface dialog, int id) {
+                   OkHttpClient client = new OkHttpClient();
+                   RequestBody requestBody;
+                   Request request;
+                   requestBody = new FormBody.Builder()
+                           .add("userrc",u.getId().toString())//dc nha
+                           .add("user",s)// s = idHome
+                           .build();
+                   request = new Request.Builder()
+                           .url("http://192.168.68.172:3000/friends/send")
+                           .post(requestBody)
+                           .build();
+                   client.newCall(request).enqueue(new Callback() {
+                       @Override
+                       public void onFailure(Call call, IOException e) {
+                            Log.e("Error",e.getMessage());
+                       }
+
+                       @Override
+                       public void onResponse(Call call, Response response) throws IOException {
+//                            context.runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    builder.setPositiveButtonIcon(context.getDrawable(R.drawable.ic_baseline_mark_email_read_24));
+//                                }
+//                            });
+                       }
+                   });
+
+               }
+           });
+           builder.setPositiveButtonIcon(context.getDrawable(R.drawable.ic_baseline_person_add_24));
+       }
+       if(stt==1){// la ban
+
+       }
+       if(stt == 2){
+           // da gui
+           builder.setNegativeButton("", new DialogInterface.OnClickListener() {
+               @Override
+               public void onClick(DialogInterface dialogInterface, int i) {
+                   OkHttpClient client = new OkHttpClient();
+                   RequestBody requestBody;
+                   Request request;
+                   requestBody = new FormBody.Builder()
+                           .add("userrc",u.getId())//dc nha
+                           .add("user",s)// s = idHome
+                           .build();
+                   request = new Request.Builder()
+                           .url("http://192.168.68.172:3000/friends/removesend")
+                           .delete(requestBody)
+                           .build();
+                   client.newCall(request).enqueue(new Callback() {
+                       @Override
+                       public void onFailure(Call call, IOException e) {
+                           Log.e("Error",e.getMessage());
+                       }
+
+                       @Override
+                       public void onResponse(Call call, Response response) throws IOException {
+                           context.runOnUiThread(new Runnable() {
+                               @Override
+                               public void run() {
+                                   builder.setPositiveButtonIcon(context.getDrawable(R.drawable.ic_baseline_mark_email_read_24));
+                               }
+                           });
+                       }
+                   });
+               }
+           });
+           builder.setNegativeButtonIcon(p);
+           // Create "OK" button with OnClickListener.
+           builder.setPositiveButtonIcon(context.getDrawable(R.drawable.ic_baseline_mark_email_read_24));
+       }
+       if(stt == 3){
+           // da nhan
+           builder.setNegativeButton("", new DialogInterface.OnClickListener() {
+               @Override
+               public void onClick(DialogInterface dialogInterface, int i) {
+                   OkHttpClient client = new OkHttpClient();
+                   RequestBody requestBody;
+                   Request request;
+                   requestBody = new FormBody.Builder()
+                           .add("user",s)
+                           .add("userrc",u.getId())
+                           .build();
+                   request = new Request.Builder()
+                           .url("http://192.168.68.172:3000/friends/remove")
+                           .delete(requestBody)
+                           .build();
+                   client.newCall(request).enqueue(new Callback() {
+                       @Override
+                       public void onFailure(Call call, IOException e) {
+
+                       }
+
+                       @Override
+                       public void onResponse(Call call, Response response) throws IOException {
+
+                       }
+                   });
+
+               }
+           });
+           builder.setNegativeButtonIcon(p);
+           // Create "OK" button with OnClickListener.
+           builder.setPositiveButtonIcon(context.getDrawable(R.drawable.ic_baseline_check_24));
+       }
+
+        // Create AlertDialog:
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+    boolean SearchInList(String e,List<String> list){
+        for(String tmp:list){
+            if(tmp.equals(e))
+                return true;
+        }
+        return false;
     }
 
 }

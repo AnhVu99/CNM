@@ -5,7 +5,7 @@ import java.util.Date;
 public class MyUser {
     String user,name,pass,bday;
    // Date doB;
-    boolean gender,trangthai;
+    boolean gender,trangthai,agent;
     int img;
 
     public MyUser(String id, String name, String pass, String doB, boolean gender, int img) {
@@ -24,6 +24,14 @@ public class MyUser {
         this.bday = null;
         this.gender = false;
         this.img = 0;
+    }
+
+    public boolean isAgent() {
+        return agent;
+    }
+
+    public void setAgent(boolean agent) {
+        this.agent = agent;
     }
 
     public boolean isStt() {

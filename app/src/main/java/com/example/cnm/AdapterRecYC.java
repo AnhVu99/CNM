@@ -16,9 +16,9 @@ import java.util.ArrayList;
 public class AdapterRecYC extends RecyclerView.Adapter<ViewHolder> {
     private LayoutInflater layoutInflater;
     private Context context;
-    private ArrayList<itemDB> arrayList;
+    private ArrayList<MyUser> arrayList;
 
-    public AdapterRecYC(Context context, ArrayList<itemDB> arrayList) {
+    public AdapterRecYC(Context context, ArrayList<MyUser> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
         layoutInflater = LayoutInflater.from(context);
@@ -33,10 +33,10 @@ public class AdapterRecYC extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        itemDB db = arrayList.get(position);
-        holder.img.setImageResource(db.getAnh());
-        holder.tvSDT.setText(db.getSDT());
-        holder.tvName.setText(db.getTen());
+        MyUser db = arrayList.get(position);
+        holder.img.setImageResource(db.getImg());
+        holder.tvSDT.setText(db.getId());
+        holder.tvName.setText(db.getName());
     }
 
     @Override

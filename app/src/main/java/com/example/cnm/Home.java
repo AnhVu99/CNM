@@ -36,8 +36,9 @@ public class Home extends AppCompatActivity {
                     toolbar.setTitle("Thông tin cá nhân");
                     return true;
                 case R.id.navigation_DanhBa:
-                    fragment = new Danhba();
-                    loadFragment(fragment);
+//                    fragment = new Danhba();
+//                    loadFragment(fragment);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frame_container,Danhba.newInstance(phonenumber)).commit();
                     toolbar.setTitle("Danh bạ");
                     return true;
                 case R.id.navigation_mess:

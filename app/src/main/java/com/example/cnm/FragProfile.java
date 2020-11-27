@@ -103,7 +103,7 @@ public class FragProfile extends Fragment {
                 .add("user", mParam1)
                 .build();
         request = new Request.Builder()
-                .url("http://10.156.167.139:3000/users/getuser")
+                .url("http://192.168.68.172:3000/users/getuser")
                 .patch(requestBody)
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -160,7 +160,7 @@ public class FragProfile extends Fragment {
                         .add("bday",String.valueOf(getDateFromDatePicker(dpNS)))
                         .build();
                 request = new Request.Builder()
-                        .url("http://10.156.167.139:3000/users/update")
+                        .url("http://192.168.68.172:3000/users/update")
                         .put(requestBody)
                         .build();
                 client.newCall(request).enqueue(new Callback() {
