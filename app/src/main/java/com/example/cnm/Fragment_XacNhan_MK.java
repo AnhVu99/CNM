@@ -55,7 +55,7 @@ public class Fragment_XacNhan_MK extends Fragment {
     FirebaseAuth auth;
     PhoneAuthOptions options;
     private String verificationIds;
-    static final String host = "192.168.100.171";
+    static final String host = "192.168.43.73";
     public Fragment_XacNhan_MK() {
         // Required empty public constructor
     }

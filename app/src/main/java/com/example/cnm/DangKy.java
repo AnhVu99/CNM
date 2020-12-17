@@ -1,5 +1,6 @@
 package com.example.cnm;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -38,7 +39,7 @@ public class DangKy extends AppCompatActivity {
     Button btnDK;
     ImageView img;
     String phonenumber;
-    static final String host = "192.168.100.171";
+    static final String host = "192.168.43.73";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +104,7 @@ public class DangKy extends AppCompatActivity {
                         .add("name",user.getName())
                         .add("gender",String.valueOf(user.isGender()))
                         .add("bday",String.valueOf(user.getDoB()))
-                        .add("trangthai",String.valueOf(Boolean.FALSE))
+                        .add("trangthai",String.valueOf(Boolean.TRUE))
                         .build();
                 Request request = new Request.Builder()
                         .url("http://"+host+":3000/users/create")
@@ -121,6 +122,9 @@ public class DangKy extends AppCompatActivity {
                             @Override
                             public void run() {
                                 Toast.makeText(DangKy.this,"Đăng kí thành công",Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(DangKy.this,Home.class);
+                                intent.putExtra("phonenumber", phonenumber);
+                                startActivity(intent);
                             }
                         });
                     }

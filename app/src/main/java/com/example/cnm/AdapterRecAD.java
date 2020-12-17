@@ -37,11 +37,12 @@ public class AdapterRecAD extends RecyclerView.Adapter<ADViewHolder> {
     private LayoutInflater layoutInflater;
     private Context context;
     private List<MyUser> arrayList;
-    static final String host = "192.168.100.171";
+    static final String host = "192.168.43.73";
     public AdapterRecAD(Context context, List<MyUser> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
         layoutInflater = LayoutInflater.from(context);
+
     }
     @NonNull
     @Override

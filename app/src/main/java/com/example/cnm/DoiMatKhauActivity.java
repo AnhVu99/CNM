@@ -32,7 +32,7 @@ public class DoiMatKhauActivity extends AppCompatActivity {
     RequestBody requestBody;
     Request request;
     MyUser user;
-    static final String host = "192.168.100.171";
+    static final String host = "192.168.43.73";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -30,7 +30,7 @@ public class Admin extends AppCompatActivity {
     RecyclerView rec;
     //List<MyUser> list;
     AdapterRecAD adapterRecAD;
-    static final String host = "192.168.100.171";
+    static final String host = "192.168.43.73";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

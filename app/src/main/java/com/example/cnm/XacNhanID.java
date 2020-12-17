@@ -52,7 +52,7 @@ public class XacNhanID extends AppCompatActivity {
     PhoneAuthOptions options;
     String phoneNumber;
     private String verificationIds;
-    static final String host = "192.168.100.171";
+    static final String host = "192.168.43.73";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

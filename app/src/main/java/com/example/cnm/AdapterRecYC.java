@@ -27,11 +27,11 @@ public class AdapterRecYC extends RecyclerView.Adapter<ViewHolder> {
     private Context context;
     private ArrayList<MyUser> arrayList;
     String id;
-    static final String host = "192.168.100.171";
+    static final String host = "192.168.43.73";
 
     public AdapterRecYC(Context context, ArrayList<MyUser> arrayList,String ID) {
-        this.context = context;
         this.arrayList = arrayList;
+        this.context = context;
         layoutInflater = LayoutInflater.from(context);
         id = ID;
     }
@@ -49,7 +49,8 @@ public class AdapterRecYC extends RecyclerView.Adapter<ViewHolder> {
         holder.img.setImageResource(db.getImg());
         holder.tvSDT.setText(db.getId());
         holder.tvName.setText(db.getName());
-
+        int actualPosition = holder.getAdapterPosition();
+        notifyItemRangeChanged(actualPosition, arrayList.size());
         holder.btnRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

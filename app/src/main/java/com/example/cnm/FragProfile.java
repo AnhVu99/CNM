@@ -44,7 +44,7 @@ public class FragProfile extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    static final String host = "192.168.100.171";
+    static final String host = "192.168.43.73";
     TextView tvID;
     EditText etName;
     RadioButton rbNam,rbNu;

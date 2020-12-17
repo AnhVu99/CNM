@@ -63,7 +63,7 @@ public class Danhba extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    static final String host = "192.168.100.171";
+    static final String host = "192.168.43.73";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
